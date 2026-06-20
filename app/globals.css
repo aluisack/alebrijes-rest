@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-copal: #C17F3A;
+    --color-grana: #C0392B;
+    --color-jade: #1A7A4A;
+    --color-indigo: #2C3E7A;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-stone-900 text-white px-6 py-3 rounded-full text-sm font-medium
+           hover:bg-stone-700 transition-colors duration-200 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply border border-stone-300 text-stone-700 px-6 py-3 rounded-full text-sm font-medium
+           hover:border-stone-500 hover:bg-stone-100 transition-all duration-200 active:scale-95;
+  }
+
+  .btn-whatsapp {
+    @apply bg-emerald-600 text-white px-6 py-3 rounded-full text-sm font-medium
+           hover:bg-emerald-700 transition-colors duration-200 flex items-center gap-2;
+  }
+
+  .tag {
+    @apply inline-block text-xs font-medium px-3 py-1 rounded-full;
+  }
+
+  .tag-disponible {
+    @apply bg-emerald-100 text-emerald-800;
+  }
+
+  .tag-apartado {
+    @apply bg-amber-100 text-amber-800;
+  }
+
+  .tag-vendido {
+    @apply bg-stone-100 text-stone-500;
+  }
+}
+
+/* Galería masonry */
+.galeria-masonry {
+  columns: 2;
+  column-gap: 3px;
+}
+
+@media (min-width: 768px) {
+  .galeria-masonry {
+    columns: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .galeria-masonry {
+    columns: 4;
+  }
+}
+
+.galeria-masonry > * {
+  break-inside: avoid;
+  margin-bottom: 3px;
+}
+
+/* Animación de entrada para la galería */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.4s ease-out both;
+}

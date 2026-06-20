@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ARTESANO
+  PROMOTOR
+  ADMIN
+}
+
+enum EstadoAlebrije {
+  DISPONIBLE
+  APARTADO
+  VENDIDO
+}
+
+enum EstadoCatalogo {
+  PROPUESTO
+  APROBADO
+  RECHAZADO
+}
+
+enum EstadoApartado {
+  PENDIENTE
+  CONFIRMADO
+  CANCELADO
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  nombre    String
+  rol       Rol      @default(ARTESANO)
+  avatarUrl String?
+  whatsapp  String?
+  bio       String?
+  localidad String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // NextAuth
+  accounts Account[]
+  sessions Session[]
+
+  // Relaciones de negocio
+  alebrijes Alebrije[]
+  locales   Local[]
+
+  @@map("usuarios")
+}
+
+model Alebrije {
+  id          String         @id @default(cuid())
+  artesanoId  String
+  nombre      String
+  slug        String         @unique
+  descripcion String
+  tecnica     String
+  animales    String[]
+  dimensiones String
+  precio      Decimal        @db.Decimal(10, 2)
+  estado      EstadoAlebrije @default(DISPONIBLE)
+  publicado   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  artesano      Usuario        @relation(fields: [artesanoId], references: [id])
+  fotos         FotoAlebrije[]
+  catalogoItems CatalogoItem[]
+  apartados     Apartado[]
+
+  @@index([artesanoId])
+  @@index([estado])
+  @@map("alebrijes")
+}
+
+model FotoAlebrije {
+  id          String  @id @default(cuid())
+  alebrijeId  String
+  url         String
+  urlThumb    String
+  esPrincipal Boolean @default(false)
+  orden       Int     @default(0)
+
+  alebrije Alebrije @relation(fields: [alebrijeId], references: [id], onDelete: Cascade)
+
+  @@index([alebrijeId])
+  @@map("fotos_alebrije")
+}
+
+model Local {
+  id         String @id @default(cuid())
+  promotorId String
+  nombre     String
+  slug       String @unique
+  tipo       String
+  direccion  String?
+  qrCodeUrl  String?
+  createdAt  DateTime @default(now())
+
+  promotor  Usuario        @relation(fields: [promotorId], references: [id])
+  catalogo  CatalogoItem[]
+  apartados Apartado[]
+
+  @@map("locales")
+}
+
+model CatalogoItem {
+  id         String         @id @default(cuid())
+  localId    String
+  alebrijeId String
+  estado     EstadoCatalogo @default(PROPUESTO)
+  orden      Int            @default(0)
+  destacado  Boolean        @default(false)
+  creadoEn   DateTime       @default(now())
+
+  local    Local    @relation(fields: [localId], references: [id])
+  alebrije Alebrije @relation(fields: [alebrijeId], references: [id])
+
+  @@unique([localId, alebrijeId])
+  @@map("catalogo_items")
+}
+
+model Apartado {
+  id              String         @id @default(cuid())
+  alebrijeId      String
+  localId         String?
+  nombreComprador String
+  email           String
+  mensaje         String?
+  estado          EstadoApartado @default(PENDIENTE)
+  createdAt       DateTime       @default(now())
+
+  alebrije Alebrije @relation(fields: [alebrijeId], references: [id])
+  local    Local?   @relation(fields: [localId], references: [id])
+
+  @@map("apartados")
+}
+
+// NextAuth tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
