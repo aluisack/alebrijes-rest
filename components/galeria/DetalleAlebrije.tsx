@@ -20,7 +20,6 @@ interface Artesano {
   localidad: string | null;
   bio: string | null;
   whatsapp: string | null;
-  avatarUrl: string | null;
 }
 
 interface AlebrijeDetalle {
