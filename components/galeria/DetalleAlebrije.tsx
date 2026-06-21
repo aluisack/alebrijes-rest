@@ -16,7 +16,7 @@ interface Foto {
 
 interface Artesano {
   id: string;
-  nombre: string;
+  name: string | null;
   localidad: string | null;
   bio: string | null;
   whatsapp: string | null;
@@ -25,7 +25,7 @@ interface Artesano {
 interface AlebrijeDetalle {
   id: string;
   slug: string;
-  nombre: string;
+  name: string | null;
   descripcion: string;
   tecnica: string;
   animales: string[];
