@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { GaleriaGrid } from "@/components/galeria/GaleriaGrid";
 import { NavBar } from "@/components/ui/NavBar";
 
-export const revalidate = 60; // ISR cada minuto
+export const dynamic = "force-dynamic";
 
 async function getAlebrijes() {
   return prisma.alebrije.findMany({
@@ -17,12 +17,9 @@ async function getAlebrijes() {
 
 export default async function GaleriaPage() {
   const alebrijes = await getAlebrijes();
-
   return (
     <main className="min-h-screen bg-stone-50">
       <NavBar />
-
-      {/* Hero */}
       <section className="pt-24 pb-12 px-6 text-center">
         <p className="text-xs uppercase tracking-widest text-stone-400 mb-3">
           Arte popular oaxaqueño
@@ -36,13 +33,9 @@ export default async function GaleriaPage() {
           San Martín Tilcajete y Arrazola, Oaxaca.
         </p>
       </section>
-
-      {/* Galería */}
       <section className="px-3 pb-16">
         <GaleriaGrid alebrijes={alebrijes} />
       </section>
-
-      {/* Footer */}
       <footer className="border-t border-stone-200 py-8 px-6 text-center">
         <p className="text-xs text-stone-400">
           alebrijes.rest — Arte popular directo de los artesanos de Oaxaca
