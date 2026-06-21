@@ -19,7 +19,7 @@ export default async function CatalogoPage() {
           alebrije: {
             include: {
               fotos: { where: { esPrincipal: true }, take: 1 },
-              artesano: { select: { nombre: true } },
+              artesano: { select: { name: true } },
             },
           },
         },

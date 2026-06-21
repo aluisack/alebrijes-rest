@@ -74,7 +74,7 @@ export function GestionCatalogo({ localId, propuestas, aprobadas }: Props) {
                     {item.alebrije.nombre}
                   </p>
                   <p className="text-xs text-stone-400">
-                    {item.alebrije.artesano.nombre} ·{" "}
+                    {item.alebrije.artesano.name} ·{" "}
                     ${Number(item.alebrije.precio).toLocaleString("es-MX")} MXN
                   </p>
                 </div>
