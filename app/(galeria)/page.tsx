@@ -1,18 +1,22 @@
-import { prisma } from "@/lib/prisma";
 import { GaleriaGrid } from "@/components/galeria/GaleriaGrid";
 import { NavBar } from "@/components/ui/NavBar";
 
 export const dynamic = "force-dynamic";
 
 async function getAlebrijes() {
-  return prisma.alebrije.findMany({
-    where: { publicado: true },
-    include: {
-      fotos: { where: { esPrincipal: true }, take: 1 },
-      artesano: { select: { nombre: true, localidad: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const { prisma } = await import("@/lib/prisma");
+    return await prisma.alebrije.findMany({
+      where: { publicado: true },
+      include: {
+        fotos: { where: { esPrincipal: true }, take: 1 },
+        artesano: { select: { nombre: true, localidad: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (e) {
+    return [];
+  }
 }
 
 export default async function GaleriaPage() {
