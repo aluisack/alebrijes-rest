@@ -15,7 +15,7 @@ async function getAlebrije(slug: string) {
       artesano: {
         select: {
           id: true,
-          nombre: true,
+          name: true,
           localidad: true,
           bio: true,
           whatsapp: true,

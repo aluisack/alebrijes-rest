@@ -44,7 +44,7 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
 
   const waUrl = alebrije.artesano.whatsapp
     ? `https://wa.me/${alebrije.artesano.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-        `Hola ${alebrije.artesano.nombre}, me interesa el alebrije "${alebrije.nombre}" que vi en alebrijes.rest`
+        `Hola ${alebrije.artesano.name}, me interesa el alebrije "${alebrije.nombre}" que vi en alebrijes.rest`
       )}`
     : null;
 
@@ -156,11 +156,11 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
           {/* Artesano */}
           <div className="flex items-start gap-3 py-4 border-t border-b border-stone-200 my-4">
             <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 font-medium text-sm flex-shrink-0">
-              {alebrije.artesano.nombre.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+              {alebrije.artesano.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-stone-900">
-                {alebrije.artesano.nombre}
+                {alebrije.artesano.name}
               </p>
               <p className="text-xs text-stone-400">
                 {alebrije.artesano.localidad}

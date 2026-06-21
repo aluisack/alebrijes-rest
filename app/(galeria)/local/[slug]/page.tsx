@@ -18,7 +18,7 @@ async function getLocal(slug: string) {
             alebrije: {
               include: {
                 fotos: { where: { esPrincipal: true }, take: 1 },
-                artesano: { select: { nombre: true, localidad: true } },
+                artesano: { select: { name: true, localidad: true } },
               },
             },
           },
