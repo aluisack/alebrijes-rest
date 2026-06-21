@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const alebrije = await prisma.alebrije.findUnique({
     where: { id: params.id },
-    include: { fotos: true, artesano: { select: { nombre: true, localidad: true, whatsapp: true } } },
+    include: { fotos: true, artesano: { select: { name: true, localidad: true, whatsapp: true } } },
   });
   if (!alebrije) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
   return NextResponse.json(alebrije);
