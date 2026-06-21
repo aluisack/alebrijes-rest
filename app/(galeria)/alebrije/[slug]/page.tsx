@@ -19,7 +19,6 @@ async function getAlebrije(slug: string) {
           localidad: true,
           bio: true,
           whatsapp: true,
-          avatarUrl: true,
         },
       },
     },
