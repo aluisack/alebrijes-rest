@@ -31,27 +31,23 @@ enum EstadoApartado {
   CANCELADO
 }
 
-model Usuario {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  nombre    String
-  rol       Rol      @default(ARTESANO)
-  avatarUrl String?
-  whatsapp  String?
-  bio       String?
-  localidad String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  rol           Rol       @default(ARTESANO)
+  whatsapp      String?
+  bio           String?
+  localidad     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  // NextAuth
-  accounts Account[]
-  sessions Session[]
-
-  // Relaciones de negocio
+  accounts  Account[]
+  sessions  Session[]
   alebrijes Alebrije[]
   locales   Local[]
-
-  @@map("usuarios")
 }
 
 model Alebrije {
@@ -69,14 +65,13 @@ model Alebrije {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  artesano      Usuario        @relation(fields: [artesanoId], references: [id])
+  artesano      User           @relation(fields: [artesanoId], references: [id])
   fotos         FotoAlebrije[]
   catalogoItems CatalogoItem[]
   apartados     Apartado[]
 
   @@index([artesanoId])
   @@index([estado])
-  @@map("alebrijes")
 }
 
 model FotoAlebrije {
@@ -90,24 +85,21 @@ model FotoAlebrije {
   alebrije Alebrije @relation(fields: [alebrijeId], references: [id], onDelete: Cascade)
 
   @@index([alebrijeId])
-  @@map("fotos_alebrije")
 }
 
 model Local {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   promotorId String
   nombre     String
-  slug       String @unique
+  slug       String   @unique
   tipo       String
   direccion  String?
   qrCodeUrl  String?
   createdAt  DateTime @default(now())
 
-  promotor  Usuario        @relation(fields: [promotorId], references: [id])
+  promotor  User           @relation(fields: [promotorId], references: [id])
   catalogo  CatalogoItem[]
   apartados Apartado[]
-
-  @@map("locales")
 }
 
 model CatalogoItem {
@@ -123,7 +115,6 @@ model CatalogoItem {
   alebrije Alebrije @relation(fields: [alebrijeId], references: [id])
 
   @@unique([localId, alebrijeId])
-  @@map("catalogo_items")
 }
 
 model Apartado {
@@ -138,11 +129,8 @@ model Apartado {
 
   alebrije Alebrije @relation(fields: [alebrijeId], references: [id])
   local    Local?   @relation(fields: [localId], references: [id])
-
-  @@map("apartados")
 }
 
-// NextAuth tables
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -157,10 +145,9 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
 
-  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@map("accounts")
 }
 
 model Session {
@@ -169,9 +156,7 @@ model Session {
   userId       String
   expires      DateTime
 
-  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -180,5 +165,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-  @@map("verification_tokens")
 }
