@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        const dbUser = await prisma.usuario.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
           select: { rol: true },
         });
