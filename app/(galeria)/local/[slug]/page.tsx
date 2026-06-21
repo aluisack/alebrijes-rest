@@ -10,7 +10,7 @@ async function getLocal(slug: string) {
     return await prisma.local.findUnique({
       where: { slug },
       include: {
-        promotor: { select: { nombre: true } },
+        promotor: { select: { name: true } },
         catalogo: {
           where: { estado: "APROBADO" },
           orderBy: { orden: "asc" },
