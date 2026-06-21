@@ -1,8 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 import { Rol } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -18,7 +20,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = user.id;
         const dbUser = await prisma.usuario.findUnique({
           where: { id: user.id },
-          select: { rol: true, whatsapp: true, localidad: true },
+          select: { rol: true },
         });
         session.user.rol = dbUser?.rol ?? Rol.ARTESANO;
       }
@@ -30,7 +32,6 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-// Extender los tipos de NextAuth
 declare module "next-auth" {
   interface Session {
     user: {
