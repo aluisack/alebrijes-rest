@@ -2,41 +2,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { EstadoAlebrije } from "@prisma/client";
 import { FormularioApartado } from "./FormularioApartado";
 import { HistoriaIA } from "./HistoriaIA";
 
-interface Foto {
-  id: string;
-  url: string;
-  urlThumb: string;
-  esPrincipal: boolean;
-  orden: number;
+interface Props {
+  alebrije: any;
 }
 
-interface Artesano {
-  id: string;
-  name: string | null;
-  localidad: string | null;
-  bio: string | null;
-  whatsapp: string | null;
-}
-
-interface AlebrijeDetalle {
-  id: string;
-  slug: string;
-  name: string | null;
-  descripcion: string;
-  tecnica: string;
-  animales: string[];
-  dimensiones: string;
-  precio: any;
-  estado: EstadoAlebrije;
-  fotos: Foto[];
-  artesano: Artesano;
-}
-
-export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
+export function DetalleAlebrije({ alebrije }: Props) {
   const [fotoActiva, setFotoActiva] = useState(0);
   const [mostrarApartado, setMostrarApartado] = useState(false);
   const disponible = alebrije.estado === "DISPONIBLE";
@@ -49,20 +22,14 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
 
   return (
     <main className="min-h-screen bg-stone-50">
-      {/* Back */}
       <div className="pt-6 px-4 md:px-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-stone-400 text-sm hover:text-stone-700 transition-colors"
-        >
+        <Link href="/" className="inline-flex items-center gap-1.5 text-stone-400 text-sm hover:text-stone-700 transition-colors">
           ← Galería
         </Link>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-6 grid md:grid-cols-2 gap-10">
-        {/* Fotos */}
         <div>
-          {/* Foto principal */}
           <div className="aspect-[4/5] bg-stone-100 overflow-hidden rounded-sm mb-3">
             {alebrije.fotos[fotoActiva] && (
               <Image
@@ -75,67 +42,41 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
               />
             )}
           </div>
-
-          {/* Thumbnails */}
           {alebrije.fotos.length > 1 && (
             <div className="flex gap-2">
-              {alebrije.fotos.map((foto, i) => (
+              {alebrije.fotos.map((foto: any, i: number) => (
                 <button
                   key={foto.id}
                   onClick={() => setFotoActiva(i)}
                   className={`w-16 h-20 overflow-hidden rounded-sm border-2 transition-colors ${
-                    i === fotoActiva
-                      ? "border-stone-800"
-                      : "border-transparent opacity-60 hover:opacity-100"
+                    i === fotoActiva ? "border-stone-800" : "border-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <Image
-                    src={foto.urlThumb}
-                    alt={`${alebrije.nombre} ángulo ${i + 1}`}
-                    width={64}
-                    height={80}
-                    className="w-full h-full object-cover"
-                  />
+                  <Image src={foto.urlThumb} alt="" width={64} height={80} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Info */}
         <div className="flex flex-col">
           <div className="mb-1">
-            <span className={`tag text-xs ${
-              disponible
-                ? "bg-emerald-100 text-emerald-800"
-                : "bg-amber-100 text-amber-800"
-            }`}>
+            <span className={`tag text-xs ${disponible ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
               {disponible ? "Disponible" : alebrije.estado === "APARTADO" ? "Apartado" : "Vendido"}
             </span>
           </div>
-
-          <h1 className="font-display text-3xl md:text-4xl text-stone-900 mt-2 mb-1">
-            {alebrije.nombre}
-          </h1>
-
+          <h1 className="font-display text-3xl md:text-4xl text-stone-900 mt-2 mb-1">{alebrije.nombre}</h1>
           <p className="text-2xl font-medium text-amber-700 mb-4">
             ${Number(alebrije.precio).toLocaleString("es-MX")}{" "}
             <span className="text-sm text-stone-400 font-normal">MXN</span>
           </p>
+          <p className="text-stone-600 text-sm leading-relaxed mb-6">{alebrije.descripcion}</p>
 
-          <p className="text-stone-600 text-sm leading-relaxed mb-6">
-            {alebrije.descripcion}
-          </p>
-
-          {/* Datos técnicos */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             {[
               { label: "Técnica", value: alebrije.tecnica },
               { label: "Dimensiones", value: alebrije.dimensiones },
-              {
-                label: "Animales",
-                value: alebrije.animales.join(" · "),
-              },
+              { label: "Animales", value: alebrije.animales.join(" · ") },
               { label: "Origen", value: alebrije.artesano.localidad || "Oaxaca" },
             ].map(({ label, value }) => (
               <div key={label} className="bg-stone-100 rounded-lg p-3">
@@ -145,40 +86,24 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
             ))}
           </div>
 
-          {/* Historia con IA */}
-          <HistoriaIA
-            alebrijeSlug={alebrije.slug}
-            nombre={alebrije.nombre}
-            animales={alebrije.animales}
-          />
+          <HistoriaIA alebrijeSlug={alebrije.slug} nombre={alebrije.nombre} animales={alebrije.animales} />
 
-          {/* Artesano */}
           <div className="flex items-start gap-3 py-4 border-t border-b border-stone-200 my-4">
             <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 font-medium text-sm flex-shrink-0">
-              {alebrije.artesano.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+              {alebrije.artesano.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-stone-900">
-                {alebrije.artesano.name}
-              </p>
-              <p className="text-xs text-stone-400">
-                {alebrije.artesano.localidad}
-              </p>
+              <p className="text-sm font-medium text-stone-900">{alebrije.artesano.name}</p>
+              <p className="text-xs text-stone-400">{alebrije.artesano.localidad}</p>
               {alebrije.artesano.bio && (
-                <p className="text-xs text-stone-500 mt-1 leading-relaxed line-clamp-2">
-                  {alebrije.artesano.bio}
-                </p>
+                <p className="text-xs text-stone-500 mt-1 leading-relaxed line-clamp-2">{alebrije.artesano.bio}</p>
               )}
             </div>
           </div>
 
-          {/* Acciones */}
           {disponible && (
             <div className="flex flex-col gap-2 mt-2">
-              <button
-                onClick={() => setMostrarApartado(true)}
-                className="btn-primary text-center"
-              >
+              <button onClick={() => setMostrarApartado(true)} className="btn-primary text-center">
                 Apartar esta pieza
               </button>
               {waUrl && (
@@ -192,11 +117,7 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
               <button
                 onClick={() => {
                   if (navigator.share) {
-                    navigator.share({
-                      title: alebrije.nombre,
-                      text: `Mira este alebrije oaxaqueño: ${alebrije.nombre}`,
-                      url: window.location.href,
-                    });
+                    navigator.share({ title: alebrije.nombre, text: `Mira este alebrije: ${alebrije.nombre}`, url: window.location.href });
                   } else {
                     navigator.clipboard.writeText(window.location.href);
                   }
@@ -210,7 +131,6 @@ export function DetalleAlebrije({ alebrije }: { alebrije: AlebrijeDetalle }) {
         </div>
       </div>
 
-      {/* Modal apartado */}
       {mostrarApartado && (
         <FormularioApartado
           alebrijeId={alebrije.id}
