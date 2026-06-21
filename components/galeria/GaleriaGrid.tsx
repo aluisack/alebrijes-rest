@@ -67,7 +67,7 @@ export function GaleriaGrid({ alebrijes, localSlug }: Props) {
                 {alebrije.nombre}
               </p>
               <p className="text-white/70 text-xs truncate">
-                {alebrije.artesano.nombre}
+                {alebrije.artesano.name}
               </p>
             </div>
 
