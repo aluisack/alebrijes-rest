@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   // Verificar que el alebrije existe y está disponible
   const alebrije = await prisma.alebrije.findUnique({
     where: { id: data.alebrijeId },
-    include: { artesano: { select: { nombre: true, whatsapp: true } } },
+    include: { artesano: { select: { name: true, whatsapp: true } } },
   });
 
   if (!alebrije || alebrije.estado !== "DISPONIBLE") {
