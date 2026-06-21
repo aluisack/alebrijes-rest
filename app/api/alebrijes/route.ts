@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     where: { publicado: true },
     include: {
       fotos: { where: { esPrincipal: true }, take: 1 },
-      artesano: { select: { nombre: true, localidad: true } },
+      artesano: { select: { name: true, localidad: true } },
     },
     orderBy: { createdAt: "desc" },
   });
